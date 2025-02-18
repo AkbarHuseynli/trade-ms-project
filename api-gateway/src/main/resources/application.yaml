@@ -1,0 +1,83 @@
+#  config:
+#    import: configserver:http://localhost:8888
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+        discovery:
+          locator:
+            enabled: true
+        routes:
+          - id: ms-product
+            uri: http://localhost:8082
+            predicates:
+              - Path=/v1/products/**
+            filters:
+              - name: CircuitBreaker
+                args:
+                  name: productServiceCircuitBreaker
+                  fallbackUri: forward:/fallback/productServiceFallBack
+              - name: RequestRateLimiter
+                args:
+                  redis-rate-limiter.replenishRate: 1
+                  redis-rate-limiter.burstCapacity: 1
+
+          - id: ms-order
+            uri: http://localhost:8081
+            predicates:
+              - Path=/v1/orders/**
+            filters:
+              - name: CircuitBreaker
+                args:
+                  name: orderServiceCircuitBreaker
+                  fallbackUri: forward:/fallback/orderServiceFallBack
+              - name: RequestRateLimiter
+                args:
+                  redis-rate-limiter.replenishRate: 1
+                  redis-rate-limiter.burstCapacity: 5
+
+          - id: ms-payment
+            uri: http://localhost:8083
+            predicates:
+              - Path=/v1/payments/**
+            filters:
+              - name: CircuitBreaker
+                args:
+                  name: paymentServiceCircuitBreaker
+                  fallbackUri: forward:/fallback/paymentServiceFallBack
+              - name: RequestRateLimiter
+                args:
+                  redis-rate-limiter.replenishRate: 1
+                  redis-rate-limiter.burstCapacity: 5
+    config:
+      enabled: false
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: ms-product
+        url: http://localhost:8082/v3/api-docs
+      - name: ms-order
+        url: http://localhost:8081/v3/api-docs
+      - name: ms-payment
+        url: http://localhost:8083/v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  tracing:
+    sampling:
+      probability: 1.0
+
+server:
+  port: 9999
+#
+#okta:
+#  oauth2:
+#    issuer: https://dev-23939577.okta.com/oauth2/default
+#    client-id: 0oanc7rel9aaebSxZ5d7
+#    client-secret: zpF9-HWXhDglXUfd8SkUBmqlM_NTDGiTfGXZVDQhLHrDUoV7lrIZSSA55yix1xe-
+#    scopes: openid, profile, email, offline_access
