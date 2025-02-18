@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          url: https://github.com/AkbarHuseynli/config-server
+          clone-on-start: true
+server:
+  port: 8888

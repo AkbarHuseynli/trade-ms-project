@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: ms-product
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db_product
+    username: user
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+#  config:
+#    import: configserver:http://localhost:8888
+server:
+  port: 8082
+
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    service-url:
+#      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+

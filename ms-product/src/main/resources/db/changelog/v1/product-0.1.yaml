@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-01-30-01
+      author: akbarhnl
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: price
+                  type: decimal(16, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: stock
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+#  - changeSet:
+#      id: 2
+#      author: akbar
+#      changes:
+#        - addUniqueConstraint:
+#            columnNames: name
+#            tableName: products
+#            constraintName: unique_name

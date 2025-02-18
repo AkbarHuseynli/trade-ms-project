@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: ms-order
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db_order
+    username: user
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false #
+#  config:
+#    import: configserver:http://localhost:8888
+server:
+  port: 8081
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    service-url:
+#      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      getOrderById:
+        #close state
+        sliding-window-size: 10 # if 10 requests
+        failure-rate-threshold: 50  # 50 percent is fail, then it'll switch to the open state
+        sliding-window-type: count_based
+        #open sate
+        wait-duration-in-open-state: # waits 10 sec in open state, then switch to half-open
+          seconds: 10
+        #half-open state
+        automatic-transition-from-open-to-half-open-enabled: true
+        permitted-number-of-calls-in-half-open-state: 2
+        max-wait-duration-in-half-open-state: 15000
