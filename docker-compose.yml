@@ -1,0 +1,25 @@
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-container
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh"
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=mem
+    ports:
+      - "9411:9411"
+    restart: always
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
